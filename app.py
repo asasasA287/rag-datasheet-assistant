@@ -11,20 +11,13 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from openai import OpenAI
 
-# ========== 1. 初始化客户端和向量库（只执行一次） ==========
-@st.cache_resource
-def load_resources():
-@st.cache_resource
-def load_resources():
-    # 从 Streamlit Secrets 读取 API Key
-    api_key = st.secrets["DASHSCOPE_API_KEY"]
-    base_url = st.secrets["DASHSCOPE_BASE_URL"]
 
- client = OpenAI(
-    api_key=st.secrets["DASHSCOPE_API_KEY"],
-    base_url=st.secrets["DASHSCOPE_BASE_URL"]
-)
-    # ... 后面的 embeddings 和 vectorstore 不变 ...
+@st.cache_resource
+def load_resources():
+    client = OpenAI(
+        api_key=st.secrets["DASHSCOPE_API_KEY"],
+        base_url=st.secrets["DASHSCOPE_BASE_URL"]
+    )
 
     embeddings = HuggingFaceEmbeddings(
         model_name="shibing624/text2vec-base-chinese",
@@ -32,25 +25,22 @@ def load_resources():
         encode_kwargs={"normalize_embeddings": True}
     )
 
-   vectorstore = Chroma(
-    persist_directory="chroma_db",
-    embedding_function=embeddings
-)
+    vectorstore = Chroma(
+        persist_directory="chroma_db",
+        embedding_function=embeddings
     )
 
     return client, vectorstore
 
+
 client, vectorstore = load_resources()
 
-# ========== 2. 页面标题 ==========
 st.set_page_config(page_title="电子元器件规格书助手", page_icon="📘")
 st.title("📘 电子元器件规格书助手")
 st.caption("上传了 12 份规格书，支持中英文提问")
 
-# ========== 3. 输入框 ==========
 question = st.text_input("请输入你的问题：", placeholder="例如：MCP9843 的温度精度是多少？")
 
-# ========== 4. 点击按钮后执行 ==========
 if st.button("提问") and question:
 
     with st.spinner("正在检索相关片段..."):
@@ -89,11 +79,9 @@ if st.button("提问") and question:
             temperature=0.2
         )
 
-    # ========== 5. 显示答案 ==========
     st.subheader("💡 回答")
     st.write(response.choices[0].message.content)
 
-    # ========== 6. 显示来源 ==========
     with st.expander("📎 查看参考片段"):
         for i, doc in enumerate(docs):
             source = os.path.basename(doc.metadata.get("source", "未知"))
