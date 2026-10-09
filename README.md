@@ -7,7 +7,7 @@
 本项目通过 RAG 技术，让用户用自然语言提问，直接从规格书中返回精准答案。
 
 ## 🚀 在线演示
-[https://asasasa287-rag-datasheet-assistant-app-xxxx.streamlit.app](...)
+[https://rag-datasheet-assistant-mgmt68igr5a8h3tvrmc5le.streamlit.app/](...)
 
 ## 🛠️ 技术栈
 - **前端**：Streamlit
