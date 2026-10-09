@@ -20,7 +20,10 @@ def load_resources():
     api_key = st.secrets["DASHSCOPE_API_KEY"]
     base_url = st.secrets["DASHSCOPE_BASE_URL"]
 
-    client = OpenAI(api_key=api_key, base_url=base_url)
+ client = OpenAI(
+    api_key=st.secrets["DASHSCOPE_API_KEY"],
+    base_url=st.secrets["DASHSCOPE_BASE_URL"]
+)
     # ... 后面的 embeddings 和 vectorstore 不变 ...
 
     embeddings = HuggingFaceEmbeddings(
