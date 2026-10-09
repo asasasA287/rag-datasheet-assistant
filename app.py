@@ -1,13 +1,9 @@
 import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-os.environ["HF_HUB_OFFLINE"] = "1"
-os.environ["TRANSFORMERS_OFFLINE"] = "1"
-
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 import streamlit as st
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import DashScopeEmbeddings
 from langchain_community.vectorstores import Chroma
 from openai import OpenAI
 
@@ -19,10 +15,9 @@ def load_resources():
         base_url=st.secrets["DASHSCOPE_BASE_URL"]
     )
 
-    embeddings = HuggingFaceEmbeddings(
-        model_name="shibing624/text2vec-base-chinese",
-        model_kwargs={"device": "cpu"},
-        encode_kwargs={"normalize_embeddings": True}
+    embeddings = DashScopeEmbeddings(
+        model="text-embedding-v3",
+        dashscope_api_key=st.secrets["DASHSCOPE_API_KEY"]
     )
 
     vectorstore = Chroma(
